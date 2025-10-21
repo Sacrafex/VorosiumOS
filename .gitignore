@@ -1,13 +1,13 @@
-# Ignore the single canonical build output directory (user requested)
 build/
 
-# Common editor/temp files (safe to ignore)
 *.swp
 *.swo
 .DS_Store
 .vscode/
 .idea/
 
-# Optional local env
 .env
 .env.local
+/.backups
+# ignore local backups
+.backups/
