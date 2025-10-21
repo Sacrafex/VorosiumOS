@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vorosium TODO List</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --accent: #8ab4ff;
+      --text: #e0e6ed;
+      --muted: #9ca3af;
+      --border: #30363d;
+      --danger: #f87171;
+      --work: #facc15;
+    }
+    * {
+      box-sizing: border-box;
+      transition: 0.15s ease all;
+    }
+    body {
+      font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    main.card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 14px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    h1 {
+      font-size: 26px;
+      margin: 0 0 6px 0;
+      color: var(--accent);
+    }
+    p {
+      color: var(--muted);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    #checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #0f141b;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      margin-bottom: 10px;
+    }
+    .item:hover {
+      background: #141a23;
+      border-color: var(--border);
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--accent);
+      margin-top: 3px;
+    }
+    .info {
+      flex: 1;
+      cursor: pointer;
+    }
+    .info strong {
+      font-size: 15px;
+      display: block;
+    }
+    .info small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag {
+      background: rgba(138, 180, 255, 0.15);
+      color: var(--accent);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      align-self: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .remove-btn {
+      color: var(--danger);
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 6px;
+      font-size: 14px;
+    }
+    .working {
+      color: var(--work);
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+    button {
+      background: #21262d;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #2a3039;
+    }
+    .save {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-weight: 600;
+    }
+    .save:hover {
+      opacity: 0.9;
+    }
+    #status {
+      color: var(--muted);
+      margin-top: 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+    #meta {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Vorosium TODO</h1>
+    <p>Official Vorosium TODO List - Make PR to add to the checklist in Vorosium/docs/TODO.json</p>
+    <span id="meta"></span>
+    <div id="checklist">Loading checklist...</div>
+
+    <div class="controls">
+      <button id="addItem">Add Item</button>
+      <button id="exportModified" class="save">Export Modified</button>
+      <button id="exportOriginal">Export Original</button>
+      <button id="reload">Reload</button>
+    </div>
+
+    <div id="status"></div>
+  </main>
+
+<script>
+const GITHUB_JSON_URL = "https://raw.githubusercontent.com/Sacrafex/VorosiumOS/refs/heads/main/docs/todo.json";
+let checklist = [];
+let meta = {};
+let originalChecklist = [];
+
+async function loadChecklist(){
+  const list = document.getElementById('checklist');
+  list.textContent = 'Loading checklist...';
+  try{
+    const res = await fetch(GITHUB_JSON_URL + '?cacheBust=' + Date.now());
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    checklist = JSON.parse(JSON.stringify(data.items || []));
+    originalChecklist = JSON.parse(JSON.stringify(data.items || []));
+    meta = data.meta || {};
+    renderChecklist();
+    document.getElementById('meta').textContent = `${meta.description || ''} (v${meta.version || '1.0'})`;
+  }catch(err){
+    list.textContent = 'Failed to load from GitHub: ' + err.message;
+  }
+}
+
+function renderChecklist(){
+  const wrap = document.createElement('div');
+  checklist.forEach((item, idx) => {
+    const li = document.createElement('div');
+    li.className = 'item';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = item.done;
+    cb.addEventListener('change', () => {
+      item.done = cb.checked;
+      saveLocal(false);
+    });
+
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.innerHTML = `<strong>${item.title}</strong><small>${item.note || ''}</small>`;
+    info.addEventListener('click', () => {
+      const newTitle = prompt("Edit title:", item.title);
+      if (newTitle !== null && newTitle.trim() !== '') item.title = newTitle.trim();
+      const newNote = prompt("Edit note (optional):", item.note || "");
+      if (newNote !== null) item.note = newNote.trim();
+      renderChecklist();
+    });
+
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = item.group?.toUpperCase() || 'MISC';
+    tag.addEventListener('click', () => {
+      const newGroup = prompt("Edit tag:", item.group || "misc");
+      if (newGroup !== null) item.group = newGroup;
+      renderChecklist();
+    });
+
+    const working = document.createElement('div');
+    working.className = 'working';
+    working.textContent = item.working ? '🟡' : '⚪';
+    working.title = 'Mark as Working';
+    working.addEventListener('click', () => {
+      item.working = !item.working;
+      renderChecklist();
+    });
+
+    const remove = document.createElement('div');
+    remove.className = 'remove-btn';
+    remove.textContent = '✕';
+    remove.title = 'Remove item';
+    remove.addEventListener('click', () => {
+      if(confirm(`Remove "${item.title}"?`)){
+        checklist.splice(idx, 1);
+        renderChecklist();
+      }
+    });
+
+    li.append(cb, info, tag, working, remove);
+    wrap.append(li);
+  });
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  container.append(wrap);
+  document.getElementById('status').textContent = `Loaded ${checklist.length} items.`;
+}
+
+function saveLocal(download = true, dataOverride = null){
+  const out = { meta: {...meta}, items: dataOverride || checklist };
+  if (download && !dataOverride) {
+    let ver = parseFloat(meta.version || 1.0);
+    if (!isNaN(ver)) ver += 0.1;
+    out.meta.version = ver.toFixed(1);
+  }
+
+  const blob = new Blob([JSON.stringify(out, null, 2)], {type: 'application/json'});
+  if(download){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'TODO.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    document.getElementById('status').textContent = 'Exported JSON — ready to commit.';
+  } else {
+    document.getElementById('status').textContent = 'Local changes saved (unsynced).';
+  }
+}
+
+document.getElementById('exportModified').addEventListener('click', () => saveLocal(true));
+document.getElementById('exportOriginal').addEventListener('click', () => saveLocal(true, originalChecklist));
+document.getElementById('reload').addEventListener('click', loadChecklist);
+document.getElementById('addItem').addEventListener('click', () => {
+  checklist.push({ title: "New Task", note: "", group: "misc", done: false, working: false });
+  renderChecklist();
+});
+
+loadChecklist();
+</script>
+</body>
+</html>
