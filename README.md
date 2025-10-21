@@ -24,10 +24,10 @@ Basic steps for building.
 2. Boot the image under QEMU:
 
    ```bash
-   ./kernel/boot.sh
+   ./scripts/boot.sh
    ```
 
-   `boot.sh` is a thin wrapper around qemu with recommended device and networking flags for local testing. Script can be ran with `-nogui` to run in terminal.
+   `boot.sh` is a thin wrapper around qemu with recommended device and networking flags for local testing. Script can be ran with `-nogui` to run directly in terminal.
 
 ## For Developers
 
