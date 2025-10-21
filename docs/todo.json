@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2025-10-20",
+    "description": "TODO.JSON"
+  },
+  "items": [
+    {
+      "id": "window-model",
+      "group": "core",
+      "title": "Deside on Window management model",
+      "note": "Floating, tiling, stacking, dynamic, all?",
+      "done": true
+    },
+    {
+      "id": "theme-system",
+      "group": "apps",
+      "title": "Deside on System Theme / Library",
+      "note": "Global theming engine, dark/light mode",
+      "done": false
+    }
+  ]
+}
