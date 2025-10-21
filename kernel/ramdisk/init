@@ -1,0 +1,38 @@
+#!/bin/sh
+# Minimal but robust init for BusyBox ramdisk
+
+# Set PATH so we can call busybox applets easily
+export PATH=/bin:/sbin
+
+echo "======================================"
+echo "      Welcome to SacrOS (init)        "
+echo "======================================"
+echo ""
+
+# Mount virtual filesystems
+echo "Mounting /proc, /sys, /dev..."
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+
+# Real root device
+ROOT_DEV="/dev/sda1"
+
+echo "Attempting to mount real root ($ROOT_DEV)..."
+if mount $ROOT_DEV /mnt; then
+    echo "Root mounted successfully!"
+    
+    # Optional: mount /boot if you have a separate partition
+    # BOOT_DEV="/dev/sda2"
+    # mount $BOOT_DEV /mnt/boot
+
+    echo "Switching to real root..."
+    exec switch_root /mnt /sbin/init
+else
+    echo "--------------------------------------"
+    echo "Failed to mount real root filesystem!"
+    echo "Dropping to fallback shell..."
+    echo "Type 'help' or run 'busybox' to see available commands."
+    echo "--------------------------------------"
+    exec sh
+fi

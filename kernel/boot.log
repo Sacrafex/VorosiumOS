@@ -1,0 +1,14 @@
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Creating sacros-rootfs directory.
+[1;31m[DEBUG][0m No working init file found at /home/killian/Vorosium-1/kernel/build/sacros-rootfs/init. Creating a placeholder init file.
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/Vorosium-1/kernel/build/debian.img
+[1;31m[DEBUG][0m Using disk image: /home/killian/DEVELOPMENT/Vorosium/kernel/build/debian.img
+[1;31m[DEBUG][0m No disk image found. Expected /home/killian/DEVELOPMENT/Vorosium/kernel/build/debian.img or /home/killian/DEVELOPMENT/Vorosium/kernel/build/sacros-rootfs.img.
+[1;31m[DEBUG][0m Attempting to build Debian image automatically...
+[1;31m[DEBUG][0m Using disk image: /home/killian/DEVELOPMENT/Vorosium/kernel/build/debian.img
