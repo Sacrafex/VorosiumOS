@@ -1,0 +1,17 @@
+{
+  "name": "vorcore-app",
+  "version": "1.0.0",
+  "description": "A Universal driver, app, and plugin center for Vorosium.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Killian J. Zabinsky & other contributors",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^39.2.0"
+  },
+  "dependencies": {
+    "electron-acrylic-window": "^0.5.11"
+  }
+}

@@ -1,0 +1,15 @@
+*.swp
+*.swo
+.DS_Store
+.vscode/
+.idea/
+
+.env
+.env.local
+/.backups
+# ignore local backups
+.backups/
+./build
+/build
+kernel/bzImage
+/VORCORE/application/node_modules

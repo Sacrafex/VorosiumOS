@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+echo
+echo "========================================="
+echo " Vorosium Starting..."
+echo " If a full rootfs is available, control will be handed off to /sbin/init"
+echo "========================================="
+echo
+sleep 1
+
+if [ -x /sbin/init ]; then
+	echo "[initramfs] exec /sbin/init..."
+	exec /sbin/init
+else
+	echo "[initramfs] no /sbin/init found; entering busybox shell"
+	exec /bin/sh
+fi
