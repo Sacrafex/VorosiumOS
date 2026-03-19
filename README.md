@@ -1,4 +1,6 @@
-# VorosiumOS
+# VorosiumOS (PAUSED DEVELOPMENT)
+Vorosium may continue as a seperate OS from Linux soon. It will be a sideproject aiming to be the most stable operating system as the first priority.
+
 **Made for creators. Not for shareholders** - An Open Source, extremely customizable, modular operating system based on the Linux Kernel.
 
 | Distribution | Installer (Recommended) | ISO |
